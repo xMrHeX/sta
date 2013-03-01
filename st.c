@@ -3373,7 +3373,7 @@ main(int argc, char *argv[]) {
 run:
 	setlocale(LC_CTYPE, "");
 	XSetLocaleModifiers("");
-	tnew(80, 24);
+	tnew(size_x, size_y);
 	xinit();
 	ttynew();
 	selinit();

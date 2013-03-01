@@ -5,8 +5,8 @@
  *
  * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
  */
-static char font[] = "Liberation Mono:pixelsize=12:antialias=false:autohint=false";
-static int borderpx = 2;
+static char font[] = "Liberation Mono:pixelsize=13:antialias=true:autohint=true";
+static int borderpx = 1;
 static char shell[] = "/bin/sh";
 
 /* timeouts (in milliseconds) */
@@ -14,13 +14,17 @@ static unsigned int doubleclicktimeout = 300;
 static unsigned int tripleclicktimeout = 600;
 
 /* frames per second st should at maximum draw to the screen */
-static unsigned int xfps = 60;
-static unsigned int actionfps = 30;
+static unsigned int xfps = 200;
+static unsigned int actionfps = 200;
 
 /* TERM value */
-static char termname[] = "st-256color";
+static char termname[] = "xterm";//"st-256color";
 
-static unsigned int tabspaces = 8;
+static unsigned int tabspaces = 4;
+
+/* Initial dimension */
+static unsigned int size_x = 120;
+static unsigned int size_y = 40;
 
 
 /* Terminal colors (16 first used in escape sequence) */
