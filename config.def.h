@@ -13,6 +13,9 @@ static char shell[] = "/bin/sh";
 static unsigned int doubleclicktimeout = 300;
 static unsigned int tripleclicktimeout = 600;
 
+/* alt screens */
+static bool allowaltscreen = true;
+
 /* frames per second st should at maximum draw to the screen */
 static unsigned int xfps = 60;
 static unsigned int actionfps = 30;
@@ -49,18 +52,24 @@ static const char *colorname[] = {
 
 	/* more colors can be added after 255 to use with DefaultXX */
 	"#cccccc",
-	"#333333",
 };
 
 
 /*
  * Default colors (colorname index)
- * foreground, background, cursor, unfocused cursor
+ * foreground, background, cursor
  */
 static unsigned int defaultfg = 7;
 static unsigned int defaultbg = 0;
 static unsigned int defaultcs = 256;
-static unsigned int defaultucs = 257;
+
+/*
+ * Colors used, when the specific fg == defaultfg. So in reverse mode this
+ * will reverse too. Another logic would only make the simple feature too
+ * complex.
+ */
+static unsigned int defaultitalic = 11;
+static unsigned int defaultunderline = 7;
 
 /* Internal shortcuts. */
 #define MODKEY Mod1Mask
@@ -215,7 +224,10 @@ static Key key[] = {
 	{ XK_End,           ShiftMask,      "\033[K",       -1,    0,    0},
 	{ XK_End,           ShiftMask,      "\033[1;2F",    +1,    0,    0},
 	{ XK_End,           XK_ANY_MOD,     "\033[4~",       0,    0,    0},
+	{ XK_Prior,         ControlMask,    "\033[5;5~",     0,    0,    0},
+	{ XK_Prior,         ShiftMask,      "\033[5;2~",     0,    0,    0},
 	{ XK_Prior,         XK_NO_MOD,      "\033[5~",       0,    0,    0},
+	{ XK_Next,          ControlMask,    "\033[6;5~",     0,    0,    0},
 	{ XK_Next,          ShiftMask,      "\033[6;2~",     0,    0,    0},
 	{ XK_Next,          XK_ANY_MOD,     "\033[6~",       0,    0,    0},
 	{ XK_F1,            XK_NO_MOD,      "\033OP" ,       0,    0,    0},

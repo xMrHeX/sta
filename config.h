@@ -13,6 +13,9 @@ static char shell[] = "/bin/sh";
 static unsigned int doubleclicktimeout = 300;
 static unsigned int tripleclicktimeout = 600;
 
+/* alt screens */
+static bool allowaltscreen = true;
+
 /* frames per second st should at maximum draw to the screen */
 static unsigned int xfps = 200;
 static unsigned int actionfps = 200;
@@ -22,10 +25,12 @@ static char termname[] = "xterm";//"st-256color";
 
 static unsigned int tabspaces = 4;
 
+/* word boundaries */
+#define WORD_BREAK " !_-+~'`()[]{}|<>,?"
+
 /* Initial dimension */
 static unsigned int size_x = 120;
 static unsigned int size_y = 40;
-
 
 /* Terminal colors (16 first used in escape sequence) */
 static const char *colorname[] = {
@@ -52,8 +57,9 @@ static const char *colorname[] = {
 	[255] = 0,
 
 	/* more colors can be added after 255 to use with DefaultXX */
-	"#cccccc",
-	"#333333",
+	"#fffaa9",
+	"#060500",
+	"#f8e040",
 };
 
 
@@ -61,10 +67,17 @@ static const char *colorname[] = {
  * Default colors (colorname index)
  * foreground, background, cursor, unfocused cursor
  */
-static unsigned int defaultfg = 7;
-static unsigned int defaultbg = 0;
+static unsigned int defaultfg = 258;
+static unsigned int defaultbg = 257;
 static unsigned int defaultcs = 256;
-static unsigned int defaultucs = 257;
+
+/*
+ * Colors used, when the specific fg == defaultfg. So in reverse mode this
+ * will reverse too. Another logic would only make the simple feature too
+ * complex.
+ */
+static unsigned int defaultitalic = 11;
+static unsigned int defaultunderline = 7;
 
 /* Internal shortcuts. */
 #define MODKEY Mod1Mask
