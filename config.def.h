@@ -71,6 +71,12 @@ static unsigned int defaultcs = 256;
 static unsigned int defaultitalic = 11;
 static unsigned int defaultunderline = 7;
 
+/* Color themes */
+static Theme themes[] = {
+	/* foreground    background   cursor   italic   underline */
+	{ 7,           0,         256,     11,      7}
+};
+
 /* Internal shortcuts. */
 #define MODKEY Mod1Mask
 

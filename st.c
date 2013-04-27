@@ -258,6 +258,14 @@ typedef struct {
 	const Arg arg;
 } Shortcut;
 
+typedef struct {
+	unsigned int fg; // Foreground
+	unsigned int bg; // Background
+	unsigned int cs; // Cursor
+	unsigned int it; // Italic
+	unsigned int ul; // Underline
+} Theme;
+
 /* function definitions used in config.h */
 static void clippaste(const Arg *);
 static void numlock(const Arg *);
@@ -420,6 +428,9 @@ static char *opt_font = NULL;
 
 static char *usedfont = NULL;
 static int usedfontsize = 0;
+
+/* Random theme key value */
+static int theme = 0;
 
 /* Font Ring Cache */
 enum {
@@ -3394,6 +3405,15 @@ main(int argc, char *argv[]) {
 	} ARGEND;
 
 run:
+	/* Random theme block (should be a separate function in the future) */
+	srand( time(NULL) );
+	theme = rand() % ( sizeof(themes) / sizeof(themes[0]) ); // random array key
+	defaultfg = themes[theme].fg;
+	defaultbg = themes[theme].bg;
+	defaultcs = themes[theme].cs;
+	defaultitalic = themes[theme].it;
+	defaultunderline = themes[theme].ul;
+
 	setlocale(LC_CTYPE, "");
 	XSetLocaleModifiers("");
 	tnew(size_x, size_y);

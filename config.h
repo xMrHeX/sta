@@ -57,15 +57,17 @@ static const char *colorname[] = {
 	[255] = 0,
 
 	/* more colors can be added after 255 to use with DefaultXX */
-	"#fffaa9",
-	"#060500",
-	"#f8e040",
+	"#fffaa9", // White Gold
+	"#060500", // Very dark yellow color
+	"#f8e040", // Deus Ex golden
+	"#22050A", // Dark red
+	"#EB2F2F", // Light red
 };
 
 
 /*
  * Default colors (colorname index)
- * foreground, background, cursor, unfocused cursor
+ * foreground, background, cursor
  */
 static unsigned int defaultfg = 258;
 static unsigned int defaultbg = 257;
@@ -78,6 +80,14 @@ static unsigned int defaultcs = 256;
  */
 static unsigned int defaultitalic = 11;
 static unsigned int defaultunderline = 7;
+
+/* Color themes */
+static Theme themes[] = {
+	/* foreground    background  cursor   italic   underline */
+	{ 258,           257,        256,     11,      7}, // DXHR Golden
+	{ 9,            0,        15,      11,      7}, // Terminator Red
+	{ 2,            0,          15,      11,      7}, // Matrix Green
+};
 
 /* Internal shortcuts. */
 #define MODKEY Mod1Mask
