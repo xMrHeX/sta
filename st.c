@@ -431,6 +431,7 @@ static int usedfontsize = 0;
 
 /* Random theme key value */
 static int theme = 0;
+struct timeval timestamp; 
 
 /* Font Ring Cache */
 enum {
@@ -3406,7 +3407,9 @@ main(int argc, char *argv[]) {
 
 run:
 	/* Random theme block (should be a separate function in the future) */
-	srand( time(NULL) );
+	gettimeofday(&timestamp, NULL);
+	srand((timestamp.tv_sec * 1000) + (timestamp.tv_usec / 1000));
+
 	theme = rand() % ( sizeof(themes) / sizeof(themes[0]) ); // random array key
 	defaultfg = themes[theme].fg;
 	defaultbg = themes[theme].bg;

@@ -60,8 +60,9 @@ static const char *colorname[] = {
 	"#fffaa9", // White Gold
 	"#060500", // Very dark yellow color
 	"#f8e040", // Deus Ex golden
-	"#22050A", // Dark red
-	"#EB2F2F", // Light red
+	"#22050A", // Dark Red
+	"#EB2F2F", // Light Red
+	"#00bae8", // Light Blue
 };
 
 
@@ -87,6 +88,7 @@ static Theme themes[] = {
 	{ 258,           257,        256,     11,      7}, // DXHR Golden
 	{ 9,            0,        15,      11,      7}, // Terminator Red
 	{ 2,            0,          15,      11,      7}, // Matrix Green
+	{ 261,          0,        15,      11,      7}, // Cyan on Gray
 };
 
 /* Internal shortcuts. */
