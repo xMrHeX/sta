@@ -417,6 +417,7 @@ static void xtermclear(int, int, int, int);
 static void xunloadfont(Font *f);
 static void xunloadfonts(void);
 static void xresize(int, int);
+static void settheme(int);
 
 static void expose(XEvent *);
 static void visibility(XEvent *);
@@ -3523,16 +3524,23 @@ numlock(const Arg *dummy) {
 }
 
 void
+settheme(int id) {
+	//if(themes[id] == NULL)
+	//	return;
+
+	defaultfg = themes[id].fg;
+	defaultbg = themes[id].bg;
+	defaultcs = themes[id].cs;
+	defaultitalic = themes[id].it;
+	defaultunderline = themes[id].ul;
+}
+
+void
 chgtheme(const Arg *arg) {
 	//if(theme + (int)&arg > LEN(themes)) NULL;
 	theme = (theme + 1 >= LEN(themes)) ? 0 : theme + 1;
-	defaultfg = themes[theme].fg;
-	defaultbg = themes[theme].bg;
-	defaultcs = themes[theme].cs;
-	defaultitalic = themes[theme].it;
-	defaultunderline = themes[theme].ul;
+	settheme(theme);
 
-//	cresize(0, 0);
 //	redraw(0);
 }
 
@@ -3845,11 +3853,7 @@ run:
 	srand((timestamp.tv_sec * 1000) + (timestamp.tv_usec / 1000));
 
 	theme = rand() % LEN(themes); // random array key
-	defaultfg = themes[theme].fg;
-	defaultbg = themes[theme].bg;
-	defaultcs = themes[theme].cs;
-	defaultitalic = themes[theme].it;
-	defaultunderline = themes[theme].ul;
+	settheme(theme);
 
 	setlocale(LC_CTYPE, "");
 	XSetLocaleModifiers("");
