@@ -5,8 +5,8 @@
  *
  * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
  */
-static char font[] = "Liberation Mono:pixelsize=12:antialias=false:autohint=false";
-static int borderpx = 2;
+static char font[] = "Liberation Mono:pixelsize=12:antialias=true:autohint=true";
+static int borderpx = 0;
 static char shell[] = "/bin/sh";
 
 /* Kerning / character bounding-box mutlipliers */
@@ -18,7 +18,7 @@ float chscale = 1.0;
  *
  * More advanced example: " `'\"()[]{}"
  */
-static char worddelimiters[] = " ";
+static char worddelimiters[] = " !_-+~'`()[]{}|<>,?";
 
 /* selection timeouts (in milliseconds) */
 static unsigned int doubleclicktimeout = 300;
@@ -28,8 +28,12 @@ static unsigned int tripleclicktimeout = 600;
 static bool allowaltscreen = true;
 
 /* frames per second st should at maximum draw to the screen */
-static unsigned int xfps = 120;
-static unsigned int actionfps = 30;
+static unsigned int xfps = 200;
+static unsigned int actionfps = 100;
+
+/* Initial dimension */
+#define SIZE_X 120
+#define SIZE_Y 40
 
 /*
  * blinking timeout (set to 0 to disable blinking) for the terminal blinking
@@ -44,9 +48,9 @@ static unsigned int blinktimeout = 800;
 static int bellvolume = 0;
 
 /* TERM value */
-static char termname[] = "st-256color";
+static char termname[] = "xterm";
 
-static unsigned int tabspaces = 8;
+static unsigned int tabspaces = 4;
 
 
 /* Terminal colors (16 first used in escape sequence) */
@@ -74,7 +78,14 @@ static const char *colorname[] = {
 	[255] = 0,
 
 	/* more colors can be added after 255 to use with DefaultXX */
-	"#cccccc",
+	"#fffaa9", // White Gold
+	"#060500", // Very dark yellow color
+	"#f8e040", // Deus Ex golden
+	"#22050A", // Dark Red
+	"#EB2F2F", // Light Red
+	"#00bae8", // Light Blue
+	"#5ec85e", // Pastel Green
+	"#040404", // Very dark Grey
 };
 
 
@@ -94,6 +105,15 @@ static unsigned int defaultcs = 256;
 static unsigned int defaultitalic = 11;
 static unsigned int defaultunderline = 7;
 
+/* Color themes */
+static Theme themes[] = {
+/*	  fg	bg		cursor	italic	underline */
+	{ 258,	257,	256,	11,		7}, // DXHR Golden
+	{ 9,	0,		15,		11,		7}, // Terminator Red
+	{ 262,	263,	15,		11,		7}, // Matrix Green
+	{ 261,	0,		15,		11,		7}, // Cyan on Gray
+};
+
 /* Internal mouse shortcuts. */
 /* Beware that overloading Button1 will disable the selection. */
 static Mousekey mshortcuts[] = {
@@ -106,12 +126,13 @@ static Mousekey mshortcuts[] = {
 #define MODKEY Mod1Mask
 
 static Shortcut shortcuts[] = {
-	/* modifier		key		function	argument */
+	/* modifier			key			function	argument */
 	{ MODKEY|ShiftMask,	XK_Prior,	xzoom,		{.i = +1} },
 	{ MODKEY|ShiftMask,	XK_Next,	xzoom,		{.i = -1} },
 	{ ShiftMask,		XK_Insert,	selpaste,	{.i =  0} },
 	{ MODKEY|ShiftMask,	XK_Insert,	clippaste,	{.i =  0} },
-	{ MODKEY,		XK_Num_Lock,	numlock,	{.i =  0} },
+	{ MODKEY,			XK_Num_Lock,numlock,	{.i =  0} },
+	{ MODKEY,			XK_t,		chgtheme,	{.i = +1} },
 };
 
 /*
