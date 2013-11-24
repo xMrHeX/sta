@@ -1,7 +1,19 @@
+changing the title of the window
+x11/xlib app icon http://askubuntu.com/questions/339699/window-icon-set-using-xlib-x11-appears-low-resolution
+changing themes in live mode
+grabbing current theme color via xev (for use with alienfx)
+
+
+
+
+
+
+
+
+
 vt emulation
 ------------
 
-* wide-character support in conjunction with fallback xft code 
 * double-height support
 
 code & interface
@@ -13,7 +25,6 @@ code & interface
 drawing
 -------
 * add diacritics support to xdraws()
-* add kerning configuration
 * make the font cache simpler
 * add hard width handling
 	* xft is reporting wrong width and height for characters
@@ -26,13 +37,8 @@ bugs
 * fix rows and column definition in fixed geometry
 * fix -e handling
 * remove DEC test sequence when appropriate
-* When some application outputting long text is run in the shell init scripts,
-  then this text might be stripped to the standard 80x25 due to st running the
-  virtual terminal at first priority. Maybe the vt initialisation could be
-  moved somewhere after knowing the right window size.
 
 misc
 ----
 
     $ grep -nE 'XXX|TODO' st.c
-
