@@ -28,7 +28,8 @@ int InitDevice(libusb_context** usbcontext,libusb_device_handle** usbhandle,unsi
 {
 	if( 0 == libusb_init(usbcontext) ) {
 		libusb_set_debug(*usbcontext, 3);
-		if( *usbhandle = libusb_open_device_with_vid_pid(*usbcontext, idVendor, idProduct) )
+		*usbhandle = libusb_open_device_with_vid_pid(*usbcontext, idVendor, idProduct);
+		if( usbhandle )
 			fprintf(stderr, "device opened\n");	
 		else
 			return LIBUSB_OPEN_ERR;
@@ -54,11 +55,11 @@ int usbwrite(libusb_device_handle *usbhandle, unsigned char *data, unsigned shor
 		return LIBUSB_SIZE_ERR;
 
 	fprintf(stderr,"write> ");
-	for( var i = 0; i < SEND_DATA_SIZE; i++ )
+	for( int i = 0; i < SEND_DATA_SIZE; i++ )
 		fprintf(stderr, "%02x ", 0xff & ((unsigned int)data[i]));
 	fprintf(stderr, "\n");
 
-	retval=libusb_control_transfer(usbhandle,
+	retval = libusb_control_transfer(usbhandle,
 					SEND_REQUEST_TYPE,
 					SEND_REQUEST,
 					SEND_VALUE,
@@ -105,11 +106,11 @@ void afx_kbd(int r, int g, int b)
 {
 	//unsigned char rst[]={0x02,0x07,0x04,0x00,0x00,0x00,0x00,0x00,0x00};
 	unsigned char chk[]={0x02,0x06,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
-	unsigned char rply[8];
+	char rply[8];
 
 	unsigned char keys[6][9]={
 		{0x02,0x07,0x04,0x00,0x00,0x00,0x00,0x00,0x00}, // RST
-		{0x02,0x03,0x05,0x00,0x00,0x01,0x0f,0xf0,0x00}, // keyboard
+		{0x02,0x03,0x05,0x00,0x00,0x01,0xff,0xf0,0x00}, // keyboard
 		{0x02,0x04,0x00,0x00,0x00,0x00,0x00,0x00,0x00}, // END
 		{0x02,0x05,0x00,0x00,0x00,0x00,0x00,0x00,0x00}, // PGE
 		{0x02,0x07,0x04,0x00,0x00,0x00,0x00,0x00,0x00}, // RST
@@ -118,35 +119,28 @@ void afx_kbd(int r, int g, int b)
 	libusb_context *usbcontext;
 	libusb_device_handle *usbhandle;
 	int retval;
-	int ready;
 
-	retval=InitDevice(&usbcontext, &usbhandle, ALIENWARE_VENDID, ALIENWARE_PRODID);
+	retval = InitDevice(&usbcontext, &usbhandle, ALIENWARE_VENDID, ALIENWARE_PRODID);
 	usbdetach(usbhandle);
 	if( retval == OK )
 		usbread(usbhandle, rply, 8);
 //	if (retval==OK)
 //		retval=usbsetdelay(usbhandle,100);
 
-//	keys[1][6]=(r<<4);
-//	keys[1][6]|=g;
-//	keys[1][7]=(b<<4);
-
-	if( g > 200 ) g -= 200; // dirty hack until I fix the bitmask shifting
+	//if( g > 200 ) g -= 200; // dirty hack until I fix the bitmask shifting
 	keys[1][6] = (r << 4) & 0xf0;
-	keys[1][6]|= (g & 0x0f);
+	keys[1][6]|= g & 0x0f;
 	keys[1][7] = (b << 4) & 0xf0;
 
-	for( int i = 0; i < 5; i++ ) {
-		if (retval == OK)
+	for( int i = 0; i < 6; i++ ) {
+		if( retval == OK )
 			usbwrite(usbhandle, keys[i], 9);
 	}
 
-	ready = 0;
-	while( !ready ) {
+	while( rply[0] != 0x11 ) {
 		usbwrite(usbhandle, chk, 9);
 		usbread(usbhandle, rply, 8);
-		if (rply[0] == 0x11)
-			ready = 1;
 	}
+
 }
 
