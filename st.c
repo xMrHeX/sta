@@ -322,6 +322,7 @@ static void numlock(const Arg *);
 static void selpaste(const Arg *);
 static void xzoom(const Arg *);
 static void chgtheme(const Arg *);
+static void alienfx();
 
 /* Config.h for applying patches and the configuration. */
 #include "config.h"
@@ -3538,27 +3539,11 @@ numlock(const Arg *dummy) {
 
 void
 alienfx() {
-	unsigned char rply[8];
-
-	libusb_context*		usbcontext;
-	libusb_device_handle*	usbhandle;
-	int retval;
-	int i,j;
-
-	retval=InitDevice(&usbcontext,&usbhandle,ALIENWARE_VENDORID,ALIENWARE_PRODUCTID_M11XR3);
-	usbdetach(usbhandle);
-	AW_RESET;
-	if (retval==OK)
-		usbread(usbhandle,rply,8);
-//	if (retval==OK)
-//		retval=usbsetdelay(usbhandle,MIN_SPEED);
-
 	int r = (&dc.col[defaultfg])->color.red / 256;
 	int g = (&dc.col[defaultfg])->color.green / 256;
 	int b = (&dc.col[defaultfg])->color.blue / 256;
-	printf(" \n Changing color to  rgb(%d, %d, %d) \n ", r, g, b);
 
-	CHANGECOLOR(ZONE_KEYBOARD, r, g, b);
+	afx_kbd(r,g,b);
 }
 
 void
