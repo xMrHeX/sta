@@ -31,7 +31,7 @@ static bool allowaltscreen = true;
 static unsigned int xfps = 200;
 static unsigned int actionfps = 100;
 
-/* Initial dimension */
+/* Initial dimensions */
 #define SIZE_X 120
 #define SIZE_Y 40
 
@@ -86,6 +86,8 @@ static const char *colorname[] = {
 	"#00bae8", // Light Blue
 	"#5ec85e", // Pastel Green
 	"#040404", // Very dark Grey
+	"#07090b", // Dark blue
+	"#a4f6f8", // Light blue
 };
 
 
@@ -112,6 +114,7 @@ static Theme themes[] = {
 	{ 9,	0,		15,		11,		7}, // Terminator Red
 	{ 262,	263,	15,		11,		7}, // Matrix Green
 	{ 261,	0,		15,		11,		7}, // Cyan on Gray
+	{ 265,	264,	15,		11,		7}, // Light Cyan on blueish gray
 };
 
 /* Internal mouse shortcuts. */
