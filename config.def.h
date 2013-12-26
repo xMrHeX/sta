@@ -133,6 +133,7 @@ static Shortcut shortcuts[] = {
 	{ MODKEY|ShiftMask,	XK_Insert,	clippaste,	{.i =  0} },
 	{ MODKEY,			XK_Num_Lock,numlock,	{.i =  0} },
 	{ MODKEY,			XK_t,		chgtheme,	{.i = +1} },
+	{ MODKEY|ShiftMask, XK_t,		chgtheme,	{.i = -1} },
 };
 
 /*

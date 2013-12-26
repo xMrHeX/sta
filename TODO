@@ -1,10 +1,6 @@
 changing the title of the window
 x11/xlib app icon http://askubuntu.com/questions/339699/window-icon-set-using-xlib-x11-appears-low-resolution
 changing themes in live mode
-grabbing current theme color via xev (for use with alienfx)
-
-
-
 
 
 

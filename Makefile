@@ -25,7 +25,7 @@ ${OBJ}: config.h config.mk
 
 st: ${OBJ}
 	@echo CC -o $@
-	@${CC} -o $@ ${OBJ} ${LDFLAGS}
+	@${CC} -o $@ ${OBJ} ${LDFLAGS} -lusb-1.0
 
 clean:
 	@echo cleaning
