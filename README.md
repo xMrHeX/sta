@@ -4,7 +4,7 @@ st
 Fork of st.suckless.org
 
 
-Patches appliend:
+Patches applied:
 
 - Theme support + theme randomizer
 - Static xmp icon
@@ -16,6 +16,6 @@ Big kudos to @defanor for the instant theme switching code.
 
 TODO
 
-home/end and ctrl+arrows support for the command line
-Ctrl+Alt+x to reset the terminal
-repaint the application icon to match the current theme
+- home/end and ctrl+arrows support for the command line
+- Ctrl+Alt+x to reset the terminal
+- repaint the application icon to match the current theme

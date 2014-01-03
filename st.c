@@ -3112,8 +3112,6 @@ xdraws(char *s, Glyph base, int x, int y, int charlen, int bytelen) {
 		bg = &dc.col[base.bg];
 	}
 
-
-
 	if(base.mode & ATTR_BOLD) {
 		if(BETWEEN(base.fg, 0, 7)) {
 			/* basic system colors */
@@ -3542,7 +3540,7 @@ alienfx() {
 	int r = (&dc.col[defaultfg])->color.red / 256;
 	int g = (&dc.col[defaultfg])->color.green / 256;
 	int b = (&dc.col[defaultfg])->color.blue / 256;
-	printf(" \n Changing color to rgb(%d, %d, %d) \n ", &r, &g, &b);
+	printf(" \n Changing color to rgb(%d, %d, %d) \n ", r, g, b);
 
 //	afx_kbd(r, g, b);
 }
@@ -3570,9 +3568,9 @@ settheme(int id) {
 			.fg = defaultfg,
 			.bg = defaultbg
 		}, .x = term.c.x, .y = term.c.y, .state = CURSOR_DEFAULT};
-		memset(term.tabs, 0, term.col * sizeof(*term.tabs));
-		for(i = tabspaces; i < term.col; i += tabspaces)
-			term.tabs[i] = 1;
+		//memset(term.tabs, 0, term.col * sizeof(*term.tabs));
+		//for(i = tabspaces; i < term.col; i += tabspaces)
+		//	term.tabs[i] = 1;
 		term.top = 0;
 		term.bot = term.row - 1;
 		term.mode = MODE_WRAP;
@@ -3580,8 +3578,10 @@ settheme(int id) {
 		term.charset = 0;
 		for(i = 0; i <= term.c.y; i++) {
 			term.dirty[i] = 1;
-			for(j = 0; j < term.col; j++)
+			for(j = 0; j < term.col; j++) {
 				term.line[i][j].fg = defaultfg;
+				term.line[i][j].bg = defaultbg;
+			}
 		}
 		redraw(0);
 	}
