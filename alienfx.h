@@ -137,7 +137,7 @@ void afx_kbd(int r, int g, int b)
     keys[1][6]|= g & 0x0f;
     keys[1][7] = (b << 4) & 0xf0;
 
-    for( int i = 0; i < 6; i++ ) {
+    for( int i = 0; i < 5; i++ ) {
         if( retval == OK )
             usbwrite(usbhandle, keys[i], 9);
     }

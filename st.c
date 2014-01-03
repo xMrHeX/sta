@@ -3542,9 +3542,9 @@ alienfx() {
 	int r = (&dc.col[defaultfg])->color.red / 256;
 	int g = (&dc.col[defaultfg])->color.green / 256;
 	int b = (&dc.col[defaultfg])->color.blue / 256;
-	printf(" \n Changing color to  rgb(%d, %d, %d) \n ", r, g, b);
+	printf(" \n Changing color to rgb(%d, %d, %d) \n ", &r, &g, &b);
 
-	afx_kbd(r,g,b);
+//	afx_kbd(r, g, b);
 }
 
 void
