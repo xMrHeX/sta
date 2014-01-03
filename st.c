@@ -3549,8 +3549,7 @@ alienfx() {
 
 void
 settheme(int id) {
-	if( id < 0 || id >= LEN(themes) )
-	{
+	if( id < 0 ) {
 		/* Random theme block */
 		gettimeofday(&timestamp, NULL);
 		srand((timestamp.tv_sec * 1000) + (timestamp.tv_usec / 1000));
@@ -3564,24 +3563,37 @@ settheme(int id) {
 	defaultitalic = themes[id].it;
 	defaultunderline = themes[id].ul;
 
+	uint i, j;
+	if (term.c.y > 0) {
+		term.c = (TCursor){{
+			.mode = ATTR_NULL,
+			.fg = defaultfg,
+			.bg = defaultbg
+		}, .x = term.c.x, .y = term.c.y, .state = CURSOR_DEFAULT};
+		memset(term.tabs, 0, term.col * sizeof(*term.tabs));
+		for(i = tabspaces; i < term.col; i += tabspaces)
+			term.tabs[i] = 1;
+		term.top = 0;
+		term.bot = term.row - 1;
+		term.mode = MODE_WRAP;
+		memset(term.trantbl, sizeof(term.trantbl), CS_USA);
+		term.charset = 0;
+		for(i = 0; i <= term.c.y; i++) {
+			term.dirty[i] = 1;
+			for(j = 0; j < term.col; j++)
+				term.line[i][j].fg = defaultfg;
+		}
+		redraw(0);
+	}
+
 	alienfx();
 }
 
 void
 chgtheme(const Arg *arg) {
-	//if(theme + (int)*arg > LEN(themes)) return;
+	theme = (theme+1 == LEN(themes)) ? 0 : (theme + 1);
 
-	theme = (theme + 1 >= LEN(themes)) ? 0 : theme + 1;
 	settheme(theme);
-
-	//xloadcols();
-	//redraw(0);
-	//xloadcols();
-	//cresize(0, 0);
-	//treset();
-	//tfulldirt();
-	tsetdirt(0,10);
-	redraw(0);
 }
 
 char*
