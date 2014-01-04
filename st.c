@@ -3568,19 +3568,22 @@ settheme(int id) {
 			.fg = defaultfg,
 			.bg = defaultbg
 		}, .x = term.c.x, .y = term.c.y, .state = CURSOR_DEFAULT};
-		//memset(term.tabs, 0, term.col * sizeof(*term.tabs));
-		//for(i = tabspaces; i < term.col; i += tabspaces)
-		//	term.tabs[i] = 1;
+		/*memset(term.tabs, 0, term.col * sizeof(*term.tabs));
+		for(i = tabspaces; i < term.col; i += tabspaces)
+			term.tabs[i] = 1;
 		term.top = 0;
 		term.bot = term.row - 1;
 		term.mode = MODE_WRAP;
 		memset(term.trantbl, sizeof(term.trantbl), CS_USA);
-		term.charset = 0;
-		for(i = 0; i <= term.c.y; i++) {
+		term.charset = 0;*/
+		for(i = 0; i < term.row; i++) {
 			term.dirty[i] = 1;
 			for(j = 0; j < term.col; j++) {
 				term.line[i][j].fg = defaultfg;
 				term.line[i][j].bg = defaultbg;
+				// term.line[i][j].cs = defaultcs;
+				// term.line[i][j].it = defaultitalic;
+				// term.line[i][j].ul = defaultunderline;
 			}
 		}
 		redraw(0);
