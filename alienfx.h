@@ -111,7 +111,6 @@ int usbread(libusb_device_handle *usbhandle, char *data, unsigned int len)
 
 void afx_kbd(int r, int g, int b)
 {
-    unsigned char chk[]={0x02,0x06,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
     char rply[8];
 
     unsigned char keys[6][9]={
@@ -133,9 +132,17 @@ void afx_kbd(int r, int g, int b)
 //  if (retval==OK)
 //      retval=usbsetdelay(usbhandle,100);
 
-    keys[1][6] = (r << 4) & 0xf0;
-    keys[1][6]|= g & 0x0f;
-    keys[1][7] = (b << 4) & 0xf0;
+    // keys[1][6] = (r << 4) & 0xf0;
+    // keys[1][6]|= g & 0x0f;
+    // keys[1][7] = (b << 4) & 0xf0;
+
+    r = (r / 16);
+    g = (g / 16);
+    b = (b / 16);
+    printf("Changing AlienFX color to rgb(%d, %d, %d)\n", r, g, b);
+    printf("Changing AlienFX color to HEX(%x, %x, %x)\n", r, g, b);
+    keys[1][6] = (r << 4) | g;
+    keys[1][7] = b << 4;
 
     for( int i = 0; i < 5; i++ ) {
         if( retval == OK )
@@ -143,7 +150,7 @@ void afx_kbd(int r, int g, int b)
     }
 
     while( rply[0] != 0x11 ) {
-        usbwrite(usbhandle, chk, 9);
+        usbwrite(usbhandle, keys[5], 9);
         usbread(usbhandle, rply, 8);
     }
 
