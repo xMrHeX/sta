@@ -3542,7 +3542,7 @@ alienfx() {
 	int b = (&dc.col[defaultfg])->color.blue / 256;
 	printf(" \n Changing AlienFX color to rgb(%d, %d, %d) \n ", r, g, b);
 
-	// afx_kbd(r, g, b);
+	afx_kbd(r, g, b);
 }
 
 void
@@ -3568,14 +3568,6 @@ settheme(int id) {
 			.fg = defaultfg,
 			.bg = defaultbg
 		}, .x = term.c.x, .y = term.c.y, .state = CURSOR_DEFAULT};
-		/*memset(term.tabs, 0, term.col * sizeof(*term.tabs));
-		for(i = tabspaces; i < term.col; i += tabspaces)
-			term.tabs[i] = 1;
-		term.top = 0;
-		term.bot = term.row - 1;
-		term.mode = MODE_WRAP;
-		memset(term.trantbl, sizeof(term.trantbl), CS_USA);
-		term.charset = 0;*/
 		for(i = 0; i < term.row; i++) {
 			term.dirty[i] = 1;
 			for(j = 0; j < term.col; j++) {

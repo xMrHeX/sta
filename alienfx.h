@@ -1,5 +1,5 @@
-#include <stdio.h>
-#include <stdlib.h>
+//#include <stdio.h>
+//#include <stdlib.h>
 #include <libusb-1.0/libusb.h>
 
 #define ALIENWARE_VENDID   0x187c // Dell Alienware
@@ -136,13 +136,24 @@ void afx_kbd(int r, int g, int b)
     // keys[1][6]|= g & 0x0f;
     // keys[1][7] = (b << 4) & 0xf0;
 
-    r = (r / 16);
-    g = (g / 16);
-    b = (b / 16);
+    r *= 16;
+    g *= 16;
+    b *= 16;
     printf("Changing AlienFX color to rgb(%d, %d, %d)\n", r, g, b);
     printf("Changing AlienFX color to HEX(%x, %x, %x)\n", r, g, b);
-    keys[1][6] = (r << 4) | g;
-    keys[1][7] = b << 4;
+    keys[1][6] = (r & 0xf0) | ((g >> 4) & 0x0F);
+    keys[1][7] = b & 0xf0;
+
+    // r /= 16;
+    // g /= 16;
+    // b /= 16;    
+    // keys[1][6] = (r << 4) | g;
+    // keys[1][7] = b << 4;
+
+    // #55cc55 becomes #cc55cc
+    // #00bbee becomes #00eebb
+    // #aaffff becomes #ffaaff
+    // #ffee44 becomes #ee44ff
 
     for( int i = 0; i < 5; i++ ) {
         if( retval == OK )
