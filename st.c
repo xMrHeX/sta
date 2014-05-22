@@ -30,7 +30,9 @@
 #include <wchar.h>
 
 #include "arg.h"
+#ifdef ALIENFX
 #include "alienfx.h"
+#endif
 
 char *argv0;
 
@@ -322,7 +324,9 @@ static void numlock(const Arg *);
 static void selpaste(const Arg *);
 static void xzoom(const Arg *);
 static void chgtheme(const Arg *);
+#ifdef ALIENFX
 static void alienfx();
+#endif
 
 /* Config.h for applying patches and the configuration. */
 #include "config.h"
@@ -3516,7 +3520,9 @@ focus(XEvent *ev) {
 		xseturgency(0);
 		if(IS_SET(MODE_FOCUS))
 			ttywrite("\033[I", 3);
+#ifdef ALIENFX
 		alienfx(); // Set the keyboard color to be relevant to the current theme on focus
+#endif
 	} else {
 		XUnsetICFocus(xw.xic);
 		xw.state &= ~WIN_FOCUSED;
@@ -3535,6 +3541,7 @@ numlock(const Arg *dummy) {
 	term.numlock ^= 1;
 }
 
+#ifdef ALIENFX
 void
 alienfx() {
 	int r = (&dc.col[defaultfg])->color.red / 256;
@@ -3542,8 +3549,9 @@ alienfx() {
 	int b = (&dc.col[defaultfg])->color.blue / 256;
 	printf(" \n Changing AlienFX color to rgb(%d, %d, %d) \n ", r, g, b);
 
-	// afx_kbd(r, g, b);
+	afx_kbd(r, g, b);
 }
+#endif
 
 void
 settheme(int id) {
@@ -3568,14 +3576,6 @@ settheme(int id) {
 			.fg = defaultfg,
 			.bg = defaultbg
 		}, .x = term.c.x, .y = term.c.y, .state = CURSOR_DEFAULT};
-		/*memset(term.tabs, 0, term.col * sizeof(*term.tabs));
-		for(i = tabspaces; i < term.col; i += tabspaces)
-			term.tabs[i] = 1;
-		term.top = 0;
-		term.bot = term.row - 1;
-		term.mode = MODE_WRAP;
-		memset(term.trantbl, sizeof(term.trantbl), CS_USA);
-		term.charset = 0;*/
 		for(i = 0; i < term.row; i++) {
 			term.dirty[i] = 1;
 			for(j = 0; j < term.col; j++) {
@@ -3589,7 +3589,9 @@ settheme(int id) {
 		redraw(0);
 	}
 
+#ifdef ALIENFX
 	alienfx();
+#endif
 }
 
 void

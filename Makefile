@@ -8,6 +8,8 @@ OBJ = ${SRC:.c=.o}
 
 all: options st
 
+alienfx: options st-alienfx
+
 options:
 	@echo st build options:
 	@echo "CFLAGS   = ${CFLAGS}"
@@ -25,7 +27,13 @@ ${OBJ}: config.h config.mk
 
 st: ${OBJ}
 	@echo CC -o $@
-	@${CC} -o $@ ${OBJ} ${LDFLAGS} -lusb-1.0
+	@${CC} -o $@ ${OBJ} ${LDFLAGS}
+
+st-alienfx: CFLAGS += -DALIENFX
+st-alienfx: LDFLAGS += -lusb-1.0
+st-alienfx: ${OBJ}
+	@echo CC -o $@
+	@${CC} -o $@ ${OBJ} ${LDFLAGS} 
 
 clean:
 	@echo cleaning

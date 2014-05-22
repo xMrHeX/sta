@@ -1,5 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include <libusb-1.0/libusb.h>
 
 #define ALIENWARE_VENDID   0x187c // Dell Alienware
@@ -24,13 +22,21 @@
 #define READ_INDEX         0x0
 #define READ_DATA_SIZE     8
 
-int InitDevice(libusb_context** usbcontext,libusb_device_handle** usbhandle,unsigned short idVendor,unsigned short idProduct)
+
+#define AW_RESET \
+{ \
+    unsigned char data[9]={0x02,0x07,0x04,0x00,0x00,0x00,0x00,0x00,0x00}; \
+    retval=usbwrite(usbhandle,data,9); \
+}
+
+
+int InitDevice(libusb_context** usbcontext, libusb_device_handle** usbhandle, unsigned short idVendor, unsigned short idProduct)
 {
     if( 0 == libusb_init(usbcontext) ) {
         libusb_set_debug(*usbcontext, 3);
         *usbhandle = libusb_open_device_with_vid_pid(*usbcontext, idVendor, idProduct);
         if( usbhandle )
-            fprintf(stderr, "device opened\n"); 
+            fprintf(stdout, "device opened\n");
         else
             return LIBUSB_OPEN_ERR;
     } else {
@@ -38,23 +44,25 @@ int InitDevice(libusb_context** usbcontext,libusb_device_handle** usbhandle,unsi
     }
     return OK;
 }
-void usbdetach(libusb_device_handle *usbhandle)
-{
-    if (libusb_kernel_driver_active(usbhandle, 0))
-        libusb_detach_kernel_driver(usbhandle, 0);
 
-}
 void usbattach(libusb_device_handle *usbhandle)
 {
     libusb_attach_kernel_driver(usbhandle, 0);
 }
+
+void usbdetach(libusb_device_handle *usbhandle)
+{
+    if (libusb_kernel_driver_active(usbhandle, 0))
+        libusb_detach_kernel_driver(usbhandle, 0);
+}
+
 int usbwrite(libusb_device_handle *usbhandle, unsigned char *data, unsigned short len)
 {
     int retval;
     if( len != SEND_DATA_SIZE )
         return LIBUSB_SIZE_ERR;
 
-    fprintf(stderr,"write> ");
+    fprintf(stderr,"write > ");
     for( int i = 0; i < SEND_DATA_SIZE; i++ )
         fprintf(stderr, "%02x ", 0xff & ((unsigned int)data[i]));
     fprintf(stderr, "\n");
@@ -74,6 +82,7 @@ int usbwrite(libusb_device_handle *usbhandle, unsigned char *data, unsigned shor
 
     return OK;
 }
+
 int usbread(libusb_device_handle *usbhandle, char *data, unsigned int len)
 {
     unsigned char buf[READ_DATA_SIZE];
@@ -92,22 +101,16 @@ int usbread(libusb_device_handle *usbhandle, char *data, unsigned int len)
                 0);
     if (readbytes != READ_DATA_SIZE)
         return LIBUSB_READ_ERR;
-    fprintf(stderr,"read>  ");
+    fprintf(stdout,"read < ");
 
     for( int i = 0; i < READ_DATA_SIZE; i++ ) {
         data[i] = buf[i];
-        fprintf(stderr, "%02x ", 0xff & ((unsigned int)data[i]));
+        fprintf(stdout, "%02x ", 0xff & ((unsigned int)data[i]));
     }
-    fprintf(stderr, "\n");
+    fprintf(stdout, "\n");
 
     return OK;
 }
-
-
-#define tohex1(_x) \
-    ((((_x)&15) > 9) ? (((_x)&15) - 10 + 'A') : (((_x)&15) + '0'))
-#define tohex2(_x) \
-    ((((_x)>>4) > 9) ? (((_x)>>4) - 10 + 'A') : (((_x)>>4) + '0'))
 
 void afx_kbd(int r, int g, int b)
 {
@@ -124,35 +127,76 @@ void afx_kbd(int r, int g, int b)
     libusb_context *usbcontext;
     libusb_device_handle *usbhandle;
     int retval;
+    int ready;
+    int i;
 
     retval = InitDevice(&usbcontext, &usbhandle, ALIENWARE_VENDID, ALIENWARE_PRODID);
     usbdetach(usbhandle);
+    // AW_RESET;
     if( retval == OK )
         usbread(usbhandle, rply, 8);
-//  if (retval==OK)
-//      retval=usbsetdelay(usbhandle,100);
 
     // keys[1][6] = (r << 4) & 0xf0;
     // keys[1][6]|= g & 0x0f;
     // keys[1][7] = (b << 4) & 0xf0;
 
-    r = (r / 16);
-    g = (g / 16);
-    b = (b / 16);
+    r *= 16;
+    g *= 16;
+    b *= 16;
     printf("Changing AlienFX color to rgb(%d, %d, %d)\n", r, g, b);
     printf("Changing AlienFX color to HEX(%x, %x, %x)\n", r, g, b);
-    keys[1][6] = (r << 4) | g;
-    keys[1][7] = b << 4;
+    keys[1][6] = (r & 0xf0) | ((g >> 4) & 0x0F);
+    keys[1][7] = b & 0xf0;
 
-    for( int i = 0; i < 5; i++ ) {
-        if( retval == OK )
-            usbwrite(usbhandle, keys[i], 9);
+    // r /= 16;
+    // g /= 16;
+    // b /= 16;
+    // keys[1][6] = (r << 4) | g;
+    // keys[1][7] = b << 4;
+
+    // #55cc55 becomes #cc55cc
+    // #00bbee becomes #00eebb
+    // #aaffff becomes #ffaaff
+    // #ffee44 becomes #ee44ff
+
+    for( i = 0; i < 5; i++ ) {
+      if( retval == OK ) // XXX?
+        usbwrite(usbhandle, keys[i], 9);
     }
 
-    while( rply[0] != 0x11 ) {
-        usbwrite(usbhandle, keys[5], 9);
-        usbread(usbhandle, rply, 8);
-    }
+    // Mutex_lock
+   ready = 0;
+   while( !ready ) {
+     usbwrite(usbhandle, keys[5], 9); // CHK
+     usbread(usbhandle, rply, 8);
+     if( rply[0] == 0x11 ) ready = 1;
+   }
 
+   libusb_close(usbhandle);
+   libusb_exit(usbcontext);
+
+/*
+    unsigned char chk[]={0x02,0x06,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+        for (r=15;r>=0;r--)
+        {
+            keys[1][6]=(r<<4);
+            keys[1][6]|=g;
+            keys[1][7]=(b<<4);
+            for (i=0;i<5;i++)
+            {
+                if (retval==OK)
+                {
+                    usbwrite(usbhandle,keys[i],9);
+                }
+            }
+            ready=0;
+            while (!ready)
+            {
+                usbwrite(usbhandle,chk,9);
+                usbread(usbhandle,rply,8);
+                if (rply[0]==0x11) ready=1;
+            }
+        }
+*/
 }
 
