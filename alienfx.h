@@ -1,3 +1,5 @@
+//#include <stdio.h>
+//#include <stdlib.h>
 #include <libusb-1.0/libusb.h>
 
 #define ALIENWARE_VENDID   0x187c // Dell Alienware
@@ -127,14 +129,32 @@ void afx_kbd(int r, int g, int b)
     libusb_context *usbcontext;
     libusb_device_handle *usbhandle;
     int retval;
-    int ready;
-    int i;
 
     retval = InitDevice(&usbcontext, &usbhandle, ALIENWARE_VENDID, ALIENWARE_PRODID);
     usbdetach(usbhandle);
     // AW_RESET;
     if( retval == OK )
-        usbread(usbhandle, rply, 8);
+      usbread(usbhandle, rply, 8);
+/*
+    def Color(self,color):
+        r = int(color[0:2],16)/16
+        g = int(color[2:4],16)/16
+        b = int(color[4:6],16)/16
+        c = [0x00,0x00]
+        c[0] = r * 16 + g  # if r = 0xf > r*16 = 0xf0 > and b = 0xc r*16 + b 0xfc 
+        c[1] = b * 16
+        return c
+*/
+    printf("Changing AlienFX color to rgb(%d, %d, %d)\n", r, g, b);
+    printf("Changing AlienFX color to #%x %x %x\n", r, g, b);
+
+    // r = r / 16;
+    // g = g / 16;
+    // b = b / 16;
+    printf("Changing AlienFX color to 16-bit rgb(%d, %d, %d)\n", r, g, b);
+    printf("Changing AlienFX color to 16-bit #%x %x %x\n", r, g, b);
+    // keys[1][6] = ((r << 4) & 0xf0) | (g);
+    // keys[1][7] = b << 4 & 0xf0;
 
     // keys[1][6] = (r << 4) & 0xf0;
     // keys[1][6]|= g & 0x0f;
@@ -143,60 +163,22 @@ void afx_kbd(int r, int g, int b)
     r *= 16;
     g *= 16;
     b *= 16;
-    printf("Changing AlienFX color to rgb(%d, %d, %d)\n", r, g, b);
-    printf("Changing AlienFX color to HEX(%x, %x, %x)\n", r, g, b);
     keys[1][6] = (r & 0xf0) | ((g >> 4) & 0x0F);
     keys[1][7] = b & 0xf0;
 
-    // r /= 16;
-    // g /= 16;
-    // b /= 16;
-    // keys[1][6] = (r << 4) | g;
-    // keys[1][7] = b << 4;
+    // keys[1][6] = 0x00; // RG
+    // keys[1][7] = 0xf0; // B_
 
-    // #55cc55 becomes #cc55cc
-    // #00bbee becomes #00eebb
-    // #aaffff becomes #ffaaff
-    // #ffee44 becomes #ee44ff
-
-    for( i = 0; i < 5; i++ ) {
-      if( retval == OK ) // XXX?
+    for( int i = 0; i <= 5; i++ )
         usbwrite(usbhandle, keys[i], 9);
-    }
 
     // Mutex_lock
-   ready = 0;
-   while( !ready ) {
-     usbwrite(usbhandle, keys[5], 9); // CHK
-     usbread(usbhandle, rply, 8);
-     if( rply[0] == 0x11 ) ready = 1;
-   }
+    while( rply[0] != 0x11 ) {
+      usbwrite(usbhandle, keys[5], 9); // CHK
+      usbread(usbhandle, rply, 8);
+    }
 
-   libusb_close(usbhandle);
-   libusb_exit(usbcontext);
-
-/*
-    unsigned char chk[]={0x02,0x06,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
-        for (r=15;r>=0;r--)
-        {
-            keys[1][6]=(r<<4);
-            keys[1][6]|=g;
-            keys[1][7]=(b<<4);
-            for (i=0;i<5;i++)
-            {
-                if (retval==OK)
-                {
-                    usbwrite(usbhandle,keys[i],9);
-                }
-            }
-            ready=0;
-            while (!ready)
-            {
-                usbwrite(usbhandle,chk,9);
-                usbread(usbhandle,rply,8);
-                if (rply[0]==0x11) ready=1;
-            }
-        }
-*/
+    libusb_close(usbhandle);
+    libusb_exit(usbcontext);
 }
 
