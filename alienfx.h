@@ -24,6 +24,17 @@
 #define READ_INDEX         0x0
 #define READ_DATA_SIZE     8
 
+<<<<<<< HEAD
+=======
+
+#define AW_RESET \
+{ \
+    unsigned char data[9]={0x02,0x07,0x04,0x00,0x00,0x00,0x00,0x00,0x00}; \
+    retval=usbwrite(usbhandle,data,9); \
+}
+
+
+>>>>>>> ad75f85971790858585b26bcc391a60dac3922de
 int InitDevice(libusb_context** usbcontext, libusb_device_handle** usbhandle, unsigned short idVendor, unsigned short idProduct)
 {
     if( 0 == libusb_init(usbcontext) ) {
@@ -124,7 +135,9 @@ void afx_kbd(int r, int g, int b)
 
     retval = InitDevice(&usbcontext, &usbhandle, ALIENWARE_VENDID, ALIENWARE_PRODID);
     usbdetach(usbhandle);
+    // AW_RESET;
     if( retval == OK )
+<<<<<<< HEAD
       usbread(usbhandle, rply, 8);
 
 /*
@@ -150,11 +163,15 @@ void afx_kbd(int r, int g, int b)
     // keys[1][7] = b << 4 & 0xf0;
     keys[1][6] = ((r *16) & 0xf0) | (g);
     keys[1][7] = (b *16) & 0xf0;
+=======
+        usbread(usbhandle, rply, 8);
+>>>>>>> ad75f85971790858585b26bcc391a60dac3922de
 
     // keys[1][6] = (r << 4) & 0xf0;
     // keys[1][6]|= g & 0x0f;
     // keys[1][7] = (b << 4) & 0xf0;
 
+<<<<<<< HEAD
     // r *= 16;
     // g *= 16;
     // b *= 16;
@@ -166,6 +183,32 @@ void afx_kbd(int r, int g, int b)
 
     for( int i = 0; i < 5; i++ )
         usbwrite(usbhandle, keys[i], 9);
+=======
+    r *= 16;
+    g *= 16;
+    b *= 16;
+    printf("Changing AlienFX color to rgb(%d, %d, %d)\n", r, g, b);
+    printf("Changing AlienFX color to HEX(%x, %x, %x)\n", r, g, b);
+    keys[1][6] = (r & 0xf0) | ((g >> 4) & 0x0F);
+    keys[1][7] = b & 0xf0;
+
+    // r /= 16;
+    // g /= 16;
+    // b /= 16;
+
+    // keys[1][6] = (r << 4) | g;
+    // keys[1][7] = b << 4;
+
+    // #55cc55 becomes #cc55cc
+    // #00bbee becomes #00eebb
+    // #aaffff becomes #ffaaff
+    // #ffee44 becomes #ee44ff
+
+    for( int i = 0; i < 5; i++ ) {
+      // if( retval == OK ) // XXX? 
+        usbwrite(usbhandle, keys[i], 9);
+    }
+>>>>>>> ad75f85971790858585b26bcc391a60dac3922de
 
     // Mutex_lock
     while( rply[0] != 0x11 ) {
