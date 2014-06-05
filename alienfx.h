@@ -26,11 +26,10 @@
 
 #define _DEBUG 0
 
-int InitDevice(libusb_context** usbcontext, libusb_device_handle** usbhandle, unsigned short idVendor, unsigned short idProduct)
+int InitDevice(libusb_device_handle** usbhandle, unsigned short idVendor, unsigned short idProduct)
 {
-    if( 0 == libusb_init(usbcontext) ) {
-        libusb_set_debug(*usbcontext, 3);
-        *usbhandle = libusb_open_device_with_vid_pid(*usbcontext, idVendor, idProduct);
+    if( 0 == libusb_init(NULL) ) {
+        *usbhandle = libusb_open_device_with_vid_pid(NULL, idVendor, idProduct);
         if( usbhandle ) {
 #if _DEBUG
             fprintf(stdout, "device opened\n");
@@ -42,17 +41,6 @@ int InitDevice(libusb_context** usbcontext, libusb_device_handle** usbhandle, un
         return LIBUSB_INIT_ERR;
     }
     return OK;
-}
-
-void usbattach(libusb_device_handle *usbhandle)
-{
-    libusb_attach_kernel_driver(usbhandle, 0);
-}
-
-void usbdetach(libusb_device_handle *usbhandle)
-{
-    if (libusb_kernel_driver_active(usbhandle, 0))
-        libusb_detach_kernel_driver(usbhandle, 0);
 }
 
 int usbwrite(libusb_device_handle *usbhandle, unsigned char *data, unsigned short len)
@@ -131,15 +119,18 @@ void afx_kbd(int r, int g, int b)
         {0x02,0x07,0x04,0x00,0x00,0x00,0x00,0x00,0x00}, // RST
         {0x02,0x06,0x00,0x00,0x00,0x00,0x00,0x00,0x00}  // CHK
     };
-    libusb_context *usbcontext;
     libusb_device_handle *usbhandle;
-    int retval;
 
-    retval = InitDevice(&usbcontext, &usbhandle, ALIENWARE_VENDID, ALIENWARE_PRODID);
-    usbattach(usbhandle);
-    usbdetach(usbhandle);
+    int retval = InitDevice(&usbhandle, ALIENWARE_VENDID, ALIENWARE_PRODID);
+
     if( retval == OK )
-      usbread(usbhandle, rply, 8);
+        usbread(usbhandle, rply, 8);
+    else {
+        libusb_exit(NULL);
+    }
+
+    if( libusb_kernel_driver_active(usbhandle, 0) )
+        libusb_detach_kernel_driver(usbhandle, 0);
 
 #if _DEBUG
     fprintf(stdout, "Changing the keyboard AlienFX color to rgb(%d, %d, %d)\n", r, g, b);
@@ -158,11 +149,12 @@ void afx_kbd(int r, int g, int b)
 
     // Mutex_lock
     while( rply[0] != 0x11 ) {
-      usbwrite(usbhandle, keys[5], 9); // CHK
-      usbread(usbhandle, rply, 8);
+        usbwrite(usbhandle, keys[5], 9); // CHK
+        usbread(usbhandle, rply, 8);
     }
 
+    libusb_attach_kernel_driver(usbhandle, 0);
     libusb_close(usbhandle);
-    libusb_exit(usbcontext);
+    libusb_exit(NULL);
 }
 
