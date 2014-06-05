@@ -24,15 +24,20 @@
 #define READ_INDEX         0x0
 #define READ_DATA_SIZE     8
 
+#define _DEBUG 0
+
 int InitDevice(libusb_context** usbcontext, libusb_device_handle** usbhandle, unsigned short idVendor, unsigned short idProduct)
 {
     if( 0 == libusb_init(usbcontext) ) {
         libusb_set_debug(*usbcontext, 3);
         *usbhandle = libusb_open_device_with_vid_pid(*usbcontext, idVendor, idProduct);
-        if( usbhandle )
+        if( usbhandle ) {
+#if _DEBUG
             fprintf(stdout, "device opened\n");
-        else
+#endif
+        } else {
             return LIBUSB_OPEN_ERR;
+        }
     } else {
         return LIBUSB_INIT_ERR;
     }
@@ -56,10 +61,12 @@ int usbwrite(libusb_device_handle *usbhandle, unsigned char *data, unsigned shor
     if( len != SEND_DATA_SIZE )
         return LIBUSB_SIZE_ERR;
 
+#if _DEBUG
     fprintf(stderr,"write > ");
     for( int i = 0; i < SEND_DATA_SIZE; i++ )
         fprintf(stderr, "%02x ", 0xff & ((unsigned int)data[i]));
     fprintf(stderr, "\n");
+#endif
 
     retval = libusb_control_transfer(usbhandle,
                     SEND_REQUEST_TYPE,
@@ -95,13 +102,19 @@ int usbread(libusb_device_handle *usbhandle, char *data, unsigned int len)
                 0);
     if (readbytes != READ_DATA_SIZE)
         return LIBUSB_READ_ERR;
-    fprintf(stdout,"read < ");
 
+#if _DEBUG
+    fprintf(stdout,"read < ");
+#endif
     for( int i = 0; i < READ_DATA_SIZE; i++ ) {
         data[i] = buf[i];
+#if _DEBUG
         fprintf(stdout, "%02x ", 0xff & ((unsigned int)data[i]));
+#endif
     }
+#if _DEBUG
     fprintf(stdout, "\n");
+#endif
 
     return OK;
 }
@@ -122,47 +135,23 @@ void afx_kbd(int r, int g, int b)
     libusb_device_handle *usbhandle;
     int retval;
 
+    usbattach(usbhandle);
     retval = InitDevice(&usbcontext, &usbhandle, ALIENWARE_VENDID, ALIENWARE_PRODID);
     usbdetach(usbhandle);
     if( retval == OK )
       usbread(usbhandle, rply, 8);
 
-/*
-    def Color(self,color):
-        r = int(color[0:2],16)/16
-        g = int(color[2:4],16)/16
-        b = int(color[4:6],16)/16
-        c = [0x00,0x00]
-        c[0] = r * 16 + g  # if r = 0xf > r*16 = 0xf0 > and b = 0xc r*16 + b 0xfc 
-        c[1] = b * 16
-        return c
-*/
+#if _DEBUG
+    fprintf(stdout, "Changing the keyboard AlienFX color to rgb(%d, %d, %d)\n", r, g, b);
+#endif
 
-    printf("Changing AlienFX color to rgb(%d, %d, %d)\n", r, g, b);
-    printf("Changing AlienFX color to #%x %x %x\n", r, g, b);
+    // Convert colors from 8 to 3 bits
+    r /= 32;
+    g /= 32;
+    b /= 32;
 
-    r /= 16;
-    g /= 16;
-    b /= 16;
-    printf("Changing AlienFX color to 16-bit rgb(%d, %d, %d)\n", r, g, b);
-    printf("Changing AlienFX color to 16-bit #%x %x %x\n", r, g, b);
-    // keys[1][6] = ((r << 4) & 0xf0) | (g);
-    // keys[1][7] = b << 4 & 0xf0;
-    keys[1][6] = ((r *16) & 0xf0) | (g);
-    keys[1][7] = (b *16) & 0xf0;
-
-    // keys[1][6] = (r << 4) & 0xf0;
-    // keys[1][6]|= g & 0x0f;
-    // keys[1][7] = (b << 4) & 0xf0;
-
-    // r *= 16;
-    // g *= 16;
-    // b *= 16;
-    // keys[1][6] = (r & 0xf0) | ((g >> 4) & 0x0F);
-    // keys[1][7] = (b & 0xf0);
-
-    // keys[1][6] = 0x00; // RG
-    // keys[1][7] = 0xf0; // B_
+    keys[1][6] = ((r << 4) & 0xf0) | g; // R|G
+    keys[1][7] = b << 4 & 0xf0;         // B
 
     for( int i = 0; i < 5; i++ )
         usbwrite(usbhandle, keys[i], 9);
