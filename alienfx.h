@@ -1,9 +1,20 @@
-//#include <stdio.h>
-//#include <stdlib.h>
+// #include <stdio.h>
+// #include <stdlib.h>
 #include <libusb-1.0/libusb.h>
 
 #define ALIENWARE_VENDID   0x187c // Dell Alienware
+// XXX use lsusb to determine your device_id
+// #define ALIENWARE_PRODID   0x0514 // M11XR1
+// #define ALIENWARE_PRODID   0x0515 // M11XR2
+// #define ALIENWARE_PRODID   0x0516 // M11XR25
 #define ALIENWARE_PRODID   0x0522 // M11XR3
+// #define ALIENWARE_PRODID   0x0521 // M14XR1
+// #define ALIENWARE_PRODID   0x0512 // M15X
+// #define ALIENWARE_PRODID   0x0512 // M17X
+// #define ALIENWARE_PRODID   0x0520 // M17XR3
+// #define ALIENWARE_PRODID   0x0518 // M18XR2
+// #define ALIENWARE_PRODID   0x0513 // AURORA
+// #define ALIENWARE_PRODID   0x0511 // AREA51
 
 #define OK                 0
 #define LIBUSB_INIT_ERR   -1
