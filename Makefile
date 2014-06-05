@@ -25,19 +25,19 @@ config.h:
 
 ${OBJ}: config.h config.mk
 
-st: ${OBJ}
+st: clean ${OBJ}
 	@echo CC -o $@
 	@${CC} -o $@ ${OBJ} ${LDFLAGS}
 
 st-alienfx: CFLAGS += -DALIENFX
 st-alienfx: LDFLAGS += -lusb-1.0
-st-alienfx: ${OBJ}
+st-alienfx: clean ${OBJ}
 	@echo CC -o $@
 	@${CC} -o $@ ${OBJ} ${LDFLAGS} 
 
 clean:
-	@echo cleaning
-	@rm -f st ${OBJ} st-${VERSION}.tar.gz
+	@echo cleaning...
+	@rm -f st st-alienfx ${OBJ} st-${VERSION}.tar.gz
 
 dist: clean
 	@echo creating dist tarball
