@@ -12,6 +12,11 @@ Patches applied:
 
 
 Big kudos to @defanor for the instant theme switching code.
+Thanks to @Xqua for helping me figure out the AlienFX rgb math.
+
+
+I do not bear responsibility for frying your AlienFX controller chip with my code.
+Haven't fried mine, but so just I sleep tighter...
 
 
 TODO
