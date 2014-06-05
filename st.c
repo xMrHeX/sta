@@ -3555,9 +3555,13 @@ alienfx() {
 void
 settheme(int id) {
 	// Random theme block
+#ifdef ALIENFX
 	int afx = 1;
+#endif
 	if( id < 0 ) {
+#ifdef ALIENFX
 		afx = 0;
+#endif
 		gettimeofday(&timestamp, NULL);
 		srand((timestamp.tv_sec * 1000) + (timestamp.tv_usec / 1000));
 

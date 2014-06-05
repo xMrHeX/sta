@@ -26,8 +26,11 @@ Haven't fried mine, but so just I sleep tighter...
 Installation:
 -------------
 
-Copy the `51-alienfx.rules` file to /etc/udev/rules.d/ dir and run `service udev restart` as su;
-Make sure you're part of the _video_ group
+- Copy the `51-alienfx.rules` file to /etc/udev/rules.d/ dir and run `service udev restart` as su;
+- Run `make clean && make st-alienfx`;
+- Copy st-alienfx to /usr/bin as su;
+- Make sure you're part of the _video_ group;
+
 
 
 TODO
