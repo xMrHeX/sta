@@ -3554,8 +3554,10 @@ alienfx() {
 
 void
 settheme(int id) {
+	// Random theme block
+	int afx = 1;
 	if( id < 0 ) {
-		/* Random theme block */
+		afx = 0;
 		gettimeofday(&timestamp, NULL);
 		srand((timestamp.tv_sec * 1000) + (timestamp.tv_usec / 1000));
 
@@ -3589,7 +3591,7 @@ settheme(int id) {
 	}
 
 #ifdef ALIENFX
-	alienfx();
+	if( afx ) alienfx();
 #endif
 }
 
@@ -3904,7 +3906,7 @@ main(int argc, char *argv[]) {
 	} ARGEND;
 
 run:
-	settheme(-1);
+	settheme(-1); // Set theme to random on start
 
 	setlocale(LC_CTYPE, "");
 	XSetLocaleModifiers("");

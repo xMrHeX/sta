@@ -5,7 +5,7 @@
  *
  * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
  */
-static char font[] = "Liberation Mono:pixelsize=12:antialias=true:autohint=true";
+static char font[] = "Liberation Mono:pixelsize=15:antialias=true:autohint=true";
 static int borderpx = 0;
 static char shell[] = "/bin/sh";
 
@@ -78,16 +78,17 @@ static const char *colorname[] = {
 	[255] = 0,
 
 	/* more colors can be added after 255 to use with DefaultXX */
-	"#fffaa9", // White Gold
-	"#060500", // Very dark yellow color
-	"#f8e040", // Deus Ex golden
-	"#22050A", // Dark Red
-	"#EB2F2F", // Light Red
-	"#00bae8", // Light Blue
-	"#5ec85e", // Pastel Green
-	"#040404", // Very dark Grey
-	"#07090b", // Dark blue
-	"#a4f6f8", // Light blue
+	"#fffaa9", // 256: White Gold
+	"#060500", // 257: Very dark yellow color
+	"#f8e040", // 258: Deus Gold
+	"#22050A", // 259: Dark Red
+	"#EB2F2F", // 260: Light Red
+	"#00bae8", // 261: Light Blue
+	"#5ec85e", // 262: Pastel Green
+	"#040404", // 263: Very dark Grey
+	"#07090b", // 264: Dark blue
+	"#a4f6f8", // 265: Light blue
+	"#ffeedd", // 266: Test white
 };
 
 
@@ -111,10 +112,11 @@ static unsigned int defaultunderline = 7;
 static Theme themes[] = {
 /*	  fg	bg		cursor	italic	underline */
 	{ 258,	257,	256,	11,		7}, // DXHR Golden
-	{ 9,	0,		15,		11,		7}, // Terminator Red
-	{ 262,	263,	15,		11,		7}, // Matrix Green
-	{ 261,	0,		15,		11,		7}, // Cyan on Gray
-	{ 265,	264,	15,		11,		7}, // Light Cyan on blueish gray
+	{ 9,	0,		9,		11,		7}, // Terminator Red on black
+	{ 262,	263,	15,		11,		7}, // Pastel Green on very dark grey
+	{ 261,	0,		265,	11,		7}, // Blue on Black
+	{ 265,	264,	15,		11,		7}, // Light Cyan on blueish Gray
+	{ 15,	0,		15,		11,		7}, // Test white on Black
 };
 
 /* Internal mouse shortcuts. */
@@ -136,7 +138,7 @@ static Shortcut shortcuts[] = {
 	{ MODKEY|ShiftMask,	XK_Insert,	clippaste,	{.i =  0} },
 	{ MODKEY,			XK_Num_Lock,numlock,	{.i =  0} },
 	{ MODKEY,			XK_t,		chgtheme,	{.i = +1} },
-	{ MODKEY|ShiftMask, XK_t,		chgtheme,	{.i = -1} },
+	{ MODKEY|ShiftMask,	XK_t,		chgtheme,	{.i = -1} },
 };
 
 /*

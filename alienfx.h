@@ -24,7 +24,7 @@
 #define READ_INDEX         0x0
 #define READ_DATA_SIZE     8
 
-#define _DEBUG 1
+#define _DEBUG 0
 
 int InitDevice(libusb_device_handle **usbhandle, unsigned short idVendor, unsigned short idProduct)
 {
