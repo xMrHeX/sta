@@ -135,8 +135,8 @@ void afx_kbd(int r, int g, int b)
     libusb_device_handle *usbhandle;
     int retval;
 
-    usbattach(usbhandle);
     retval = InitDevice(&usbcontext, &usbhandle, ALIENWARE_VENDID, ALIENWARE_PRODID);
+    usbattach(usbhandle);
     usbdetach(usbhandle);
     if( retval == OK )
       usbread(usbhandle, rply, 8);
