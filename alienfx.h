@@ -24,23 +24,36 @@
 #define READ_INDEX         0x0
 #define READ_DATA_SIZE     8
 
-#define _DEBUG 0
+#define _DEBUG 1
 
-int InitDevice(libusb_device_handle** usbhandle, unsigned short idVendor, unsigned short idProduct)
+int InitDevice(libusb_device_handle **usbhandle, unsigned short idVendor, unsigned short idProduct)
 {
     if( 0 == libusb_init(NULL) ) {
         *usbhandle = libusb_open_device_with_vid_pid(NULL, idVendor, idProduct);
-        if( usbhandle ) {
-#if _DEBUG
-            fprintf(stdout, "device opened\n");
-#endif
-        } else {
+
+        if( *usbhandle == NULL ) {
+            fprintf(stderr, "AlienFX device not found\n");
+            libusb_exit(NULL);
             return LIBUSB_OPEN_ERR;
         }
+
+        if( libusb_kernel_driver_active(*usbhandle, 0) ) {
+            libusb_detach_kernel_driver(*usbhandle, 0);
+        }
+
+        if( libusb_claim_interface(*usbhandle, 0) < 0 ) {
+            fprintf(stderr, "Interface error\n");
+            libusb_exit(NULL);
+            return LIBUSB_OPEN_ERR;
+        }
+
+#if _DEBUG
+        fprintf(stdout, "device opened\n");
+#endif
+        return OK;
     } else {
         return LIBUSB_INIT_ERR;
     }
-    return OK;
 }
 
 int usbwrite(libusb_device_handle *usbhandle, unsigned char *data, unsigned short len)
@@ -123,14 +136,14 @@ void afx_kbd(int r, int g, int b)
 
     int retval = InitDevice(&usbhandle, ALIENWARE_VENDID, ALIENWARE_PRODID);
 
-    if( retval == OK )
+    if( retval == OK ) {
         usbread(usbhandle, rply, 8);
-    else {
-        libusb_exit(NULL);
+    } else {
+#if _DEBUG
+        fprintf(stderr, "Unable to open the AlienFX device\n");
+#endif
+        return;
     }
-
-    if( libusb_kernel_driver_active(usbhandle, 0) )
-        libusb_detach_kernel_driver(usbhandle, 0);
 
 #if _DEBUG
     fprintf(stdout, "Changing the keyboard AlienFX color to rgb(%d, %d, %d)\n", r, g, b);
