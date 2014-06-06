@@ -111,13 +111,13 @@ static unsigned int defaultunderline = 7;
 /* Color themes */
 static Theme themes[] = {
 /*    fg   bg   cursor italic underline */
-    { 258, 257, 256,   11,    7}, // DXHR Golden
-    { 9,   0,   9,     11,    7}, // Terminator Red on black
-    { 262, 263, 15,    11,    7}, // Pastel Green on very dark grey
-    { 261, 0,   265,   11,    7}, // Blue on Black
-    { 265, 264, 15,    11,    7}, // Light Cyan on blueish Gray
-    { 15,  0,   15,    11,    7}, // White on Black
-    { 2,   0,   15,    11,    7}, // Green
+	{ 258, 257, 256,   11,    7}, // DXHR Golden
+	{ 9,   0,   9,     11,    7}, // Terminator Red on black
+	{ 262, 263, 15,    11,    7}, // Pastel Green on very dark grey
+	{ 261, 0,   265,   11,    7}, // Blue on Black
+	{ 265, 264, 15,    11,    7}, // Light Cyan on blueish Gray
+	{ 15,  0,   15,    11,    7}, // White on Black
+	{ 2,   0,   15,    11,    7}, // Green
 };
 
 /* Internal mouse shortcuts. */
@@ -138,8 +138,8 @@ static Shortcut shortcuts[] = {
     { ShiftMask,        XK_Insert,   selpaste,  {.i =  0} },
     { MODKEY|ShiftMask, XK_Insert,   clippaste, {.i =  0} },
     { MODKEY,           XK_Num_Lock, numlock,   {.i =  0} },
-    { MODKEY,           XK_t,        chgtheme,  {.i = +1} },
-    { MODKEY|ShiftMask, XK_t,        chgtheme,  {.i = -1} },
+    { ControlMask,           XK_t,    chgtheme,  {.i = +1} },
+    { ControlMask|ShiftMask, XK_t,    chgtheme,  {.i = -1} },
 };
 
 /*
