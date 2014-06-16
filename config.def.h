@@ -88,7 +88,10 @@ static const char *colorname[] = {
     "#040404", // 263: Very dark Grey
     "#07090b", // 264: Dark blue
     "#a4f6f8", // 265: Light blue
-    "#ffeedd", // 266: Test white
+    "#ffeedd", // 266: White
+    "#ff742e", // 267: Orange
+    "#040000", // 268: Super-dark red
+    "#d477ff", // 269: Bright Violet
 };
 
 
@@ -118,6 +121,8 @@ static Theme themes[] = {
 	{ 265, 264, 15,    11,    7}, // Light Cyan on blueish Gray
 	{ 15,  0,   15,    11,    7}, // White on Black
 	{ 2,   0,   15,    11,    7}, // Green
+	{ 267, 268, 15,    11,    7}, // Orange
+	{ 269, 0,   15,    11,    7}, // Violent
 };
 
 /* Internal mouse shortcuts. */
@@ -138,8 +143,8 @@ static Shortcut shortcuts[] = {
     { ShiftMask,        XK_Insert,   selpaste,  {.i =  0} },
     { MODKEY|ShiftMask, XK_Insert,   clippaste, {.i =  0} },
     { MODKEY,           XK_Num_Lock, numlock,   {.i =  0} },
-    { ControlMask,           XK_t,    chgtheme,  {.i = +1} },
-    { ControlMask|ShiftMask, XK_t,    chgtheme,  {.i = -1} },
+    { MODKEY,           XK_a,        chgtheme,  {.i = +1} },
+    { MODKEY|ShiftMask, XK_a,        chgtheme,  {.i = -1} },
 };
 
 /*
