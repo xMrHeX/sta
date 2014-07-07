@@ -1,5 +1,5 @@
-// #include <stdio.h>
-// #include <stdlib.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <libusb-1.0/libusb.h>
 
 #define ALIENWARE_VENDID   0x187c // Dell Alienware
@@ -69,14 +69,14 @@ int InitDevice(libusb_device_handle **usbhandle, unsigned short idVendor, unsign
 
 int usbwrite(libusb_device_handle *usbhandle, unsigned char *data, unsigned short len)
 {
-    int retval;
+    unsigned short retval;
     if( len != SEND_DATA_SIZE )
         return LIBUSB_SIZE_ERR;
 
 #if _DEBUG
     fprintf(stderr,"write > ");
-    for( int i = 0; i < SEND_DATA_SIZE; i++ )
-        fprintf(stderr, "%02x ", 0xff & ((unsigned int)data[i]));
+    for( unsigned short i = 0; i < SEND_DATA_SIZE; i++ )
+        fprintf(stderr, "%02x ", 0xff & ((unsigned short)data[i]));
     fprintf(stderr, "\n");
 #endif
 
@@ -99,7 +99,7 @@ int usbwrite(libusb_device_handle *usbhandle, unsigned char *data, unsigned shor
 int usbread(libusb_device_handle *usbhandle, char *data, unsigned int len)
 {
     unsigned char buf[READ_DATA_SIZE];
-    int readbytes;
+    unsigned short readbytes;
 
     if( len != READ_DATA_SIZE )
         return LIBUSB_SIZE_ERR;
@@ -118,7 +118,7 @@ int usbread(libusb_device_handle *usbhandle, char *data, unsigned int len)
 #if _DEBUG
     fprintf(stdout,"read < ");
 #endif
-    for( int i = 0; i < READ_DATA_SIZE; i++ ) {
+    for( unsigned short i = 0; i < READ_DATA_SIZE; i++ ) {
         data[i] = buf[i];
 #if _DEBUG
         fprintf(stdout, "%02x ", 0xff & ((unsigned int)data[i]));
@@ -145,7 +145,7 @@ void afx_kbd(int r, int g, int b)
     };
     libusb_device_handle *usbhandle;
 
-    int retval = InitDevice(&usbhandle, ALIENWARE_VENDID, ALIENWARE_PRODID);
+    unsigned short retval = InitDevice(&usbhandle, ALIENWARE_VENDID, ALIENWARE_PRODID);
 
     if( retval == OK ) {
         usbread(usbhandle, rply, 8);
@@ -165,10 +165,12 @@ void afx_kbd(int r, int g, int b)
     g /= 32;
     b /= 32;
 
-    keys[1][6] = ((r << 4) & 0xf0) | g; // R|G
-    keys[1][7] = b << 4 & 0xf0;         // B
+    unsigned short a = ( r + g + b ) / 3;
 
-    for( int i = 0; i < 5; i++ )
+    keys[1][6] = ((r << 4) & 0xf0) | g; // R|G
+    keys[1][7] = ((b << 4) & 0xf0) | a; // B|A
+
+    for( unsigned short i = 0; i < 5; i++ )
         usbwrite(usbhandle, keys[i], 9);
 
     // Mutex_lock
