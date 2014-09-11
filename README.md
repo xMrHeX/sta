@@ -1,4 +1,4 @@
-sta
+Simple Terminal, Augmented
 ==========
 
 Fork of st.suckless.org
@@ -8,7 +8,7 @@ Patches applied:
 ----------------
 
 - Theme support + theme randomizer
-- Static NETWM icon
+- Dynamic NETWM icon to match the current theme bg & fg
 - AlienFX code for the keyboard to match the current theme (requires libusb).
 
 Thanks:
@@ -35,6 +35,5 @@ Installation:
 TODO
 ----
 
-- generate a new application icon to match the current theme each time it changes
 - improve the theme switching (only color characters which have no color, etc)
 
