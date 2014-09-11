@@ -10,8 +10,8 @@ all: options sta
 
 options:
 	@echo sta build options:
-	@echo "CFLAGS   = ${CFLAGS} -DALIENFX"
-	@echo "LDFLAGS  = ${LDFLAGS} -usb-1.0"
+	@echo "CFLAGS   = ${CFLAGS}"
+	@echo "LDFLAGS  = ${LDFLAGS}"
 	@echo "CC       = ${CC}"
 
 config.h:
@@ -23,8 +23,8 @@ config.h:
 
 ${OBJ}: config.h config.mk
 
-# sta: CFLAGS += -DALIENFX
-# sta: LDFLAGS += -lusb-1.0
+sta: CFLAGS += -DALIENFX
+sta: LDFLAGS += -lusb-1.0
 sta: clean ${OBJ}
 	@echo CC -o $@
 	@${CC} -o $@ ${OBJ} ${LDFLAGS}
