@@ -1,4 +1,4 @@
-st-alienfx
+sta
 ==========
 
 Fork of st.suckless.org
@@ -8,8 +8,8 @@ Patches applied:
 ----------------
 
 - Theme support + theme randomizer
-- Static xmp icon
-- AlienFX code for the keyboard to match the current theme
+- Static NETWM icon
+- AlienFX code for the keyboard to match the current theme (requires libusb).
 
 Thanks:
 -------
@@ -32,11 +32,9 @@ Installation:
 - Make sure you're part of the _video_ group;
 
 
-
 TODO
 ----
 
-- home/end and ctrl+arrows support for the command line
-- Ctrl+Alt+x to reset the terminal
-- repaint the application icon to match the current theme
-- improve the theme switching to only color characters which have no color
+- generate a new application icon to match the current theme each time it changes
+- improve the theme switching (only color characters which have no color, etc)
+
