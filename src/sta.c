@@ -2856,7 +2856,7 @@ xloadfonts(char *fontstr, int fontsize) {
 	}
 
 	if(!pattern)
-		die("st: can't open font %s\n", fontstr);
+		die("sta: can't open font %s\n", fontstr);
 
 	if(fontsize > 0) {
 		FcPatternDel(pattern, FC_PIXEL_SIZE);
@@ -2880,7 +2880,7 @@ xloadfonts(char *fontstr, int fontsize) {
 	FcDefaultSubstitute(pattern);
 
 	if(xloadfont(&dc.font, pattern))
-		die("st: can't open font %s\n", fontstr);
+		die("sta: can't open font %s\n", fontstr);
 
 	/* Setting character width and height. */
 	xw.cw = CEIL(dc.font.width * cwscale);
@@ -2889,17 +2889,17 @@ xloadfonts(char *fontstr, int fontsize) {
 	FcPatternDel(pattern, FC_SLANT);
 	FcPatternAddInteger(pattern, FC_SLANT, FC_SLANT_ITALIC);
 	if(xloadfont(&dc.ifont, pattern))
-		die("st: can't open font %s\n", fontstr);
+		die("sta: can't open font %s\n", fontstr);
 
 	FcPatternDel(pattern, FC_WEIGHT);
 	FcPatternAddInteger(pattern, FC_WEIGHT, FC_WEIGHT_BOLD);
 	if(xloadfont(&dc.ibfont, pattern))
-		die("st: can't open font %s\n", fontstr);
+		die("sta: can't open font %s\n", fontstr);
 
 	FcPatternDel(pattern, FC_SLANT);
 	FcPatternAddInteger(pattern, FC_SLANT, FC_SLANT_ROMAN);
 	if(xloadfont(&dc.bfont, pattern))
-		die("st: can't open font %s\n", fontstr);
+		die("sta: can't open font %s\n", fontstr);
 
 	FcPatternDestroy(pattern);
 }
@@ -3415,7 +3415,7 @@ xsettitle(char *p) {
 
 void
 xresettitle(void) {
-	xsettitle(opt_title ? opt_title : "st");
+	xsettitle(opt_title ? opt_title : "sta");
 }
 
 void
