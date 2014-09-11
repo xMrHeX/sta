@@ -131,7 +131,7 @@ int usbread(libusb_device_handle *usbhandle, char *data, unsigned int len)
     return OK;
 }
 
-void afx_kbd(int r, int g, int b)
+void afx_kbd(short r, short g, short b)
 {
     char rply[8];
 
@@ -183,4 +183,3 @@ void afx_kbd(int r, int g, int b)
     libusb_close(usbhandle);
     libusb_exit(NULL);
 }
-
