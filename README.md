@@ -8,7 +8,7 @@ Patches applied:
 ----------------
 
 - Theme support + theme randomizer
-- Dynamic NETWM icon to match the current theme bg & fg
+- Dynamic NETWM icon to match the current theme's bg & fg
 - AlienFX code for the keyboard to match the current theme (requires libusb).
 
 Thanks:
@@ -26,9 +26,9 @@ Haven't fried mine, but so just I sleep tighter...
 Installation:
 -------------
 
-- Copy the `51-alienfx.rules` file to /etc/udev/rules.d/ dir and run `service udev restart` as su;
-- Run `make clean && make st-alienfx`;
-- Copy st-alienfx to /usr/bin as su;
+- Copy the `51-alienfx.rules` file to /etc/udev/rules.d/ dir and run `sudo service udev restart`;
+- Run `make clean && make sta`;
+- Copy sta to /usr/bin as su;
 - Make sure you're part of the _video_ group;
 
 
