@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <libusb-1.0/libusb.h>
 
+#define __alienfx__ 1
+
 #define ALIENWARE_VENDID   0x187c // Dell Alienware
 // XXX use lsusb to determine your device_id
 // #define ALIENWARE_PRODID   0x0514 // M11XR1
