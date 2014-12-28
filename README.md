@@ -7,9 +7,10 @@ Fork of st.suckless.org
 Patches applied:
 ----------------
 
-- Theme support + theme randomizer
-- Dynamic NETWM icon to match the current theme's bg & fg
-- AlienFX code for the keyboard to match the current theme (requires libusb).
+- Theme support + dynamic NETWM icon
+- hide X cursor while typing
+- scrollback prototype
+- AlienFX code for the keyboard to match the current theme (libusb)
 
 Thanks:
 -------
@@ -27,13 +28,12 @@ Installation:
 -------------
 
 - Copy the `51-alienfx.rules` file to /etc/udev/rules.d/ dir and run `sudo service udev restart`;
-- Run `make clean && make sta`;
-- Copy sta to /usr/bin as su;
-- Make sure you're part of the _video_ group;
+- Run `make clean && make && sudo make install`;
+- Make sure you're part of the _video_ group (for the alienfx to work);
 
 
 TODO
 ----
 
-- improve the theme switching (only color characters which have no color, etc)
-
+- Do not allow scrollback if there's no data before the top line
+- Improve the theme switching (only color characters which have no color, scrollback, etc)
